@@ -918,6 +918,9 @@ pub fn expand_preparsed_format_args(
                     skips.push(*next_pos);
                     let _ = s.next();
                 }
+
+                // TODO: Should this include:
+                // | ('\\', Some((next_pos, 'r')))
                 ('\\', Some((next_pos, '\n')))
                 | ('\\', Some((next_pos, 'n')))
                 | ('\\', Some((next_pos, 't')))
@@ -927,10 +930,14 @@ pub fn expand_preparsed_format_args(
                     skips.push(*next_pos);
                     let _ = s.next();
                 }
+
+                // TODO: Should this include ('\r'), what about other weird
+                // whitespace like vertical tab? 
                 (' ', _) | ('\n', _) | ('\t', _) if eat_ws => {
                     skips.push(pos);
                 }
                 ('\\', Some((next_pos, 'n')))
+                | ('\\', Some((next_pos, 'r')))
                 | ('\\', Some((next_pos, 't')))
                 | ('\\', Some((next_pos, '0')))
                 | ('\\', Some((next_pos, '\\')))
